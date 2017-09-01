@@ -1,0 +1,204 @@
+#!/bin/bash
+#------------------------------------------------------------------------------
+# WPFind
+# 	author : Francois B. aka Makotosan/Shakasan
+#    email : shakasan@sirenacorp.be
+#  licence : GPLv3
+#------------------------------------------------------------------------------
+
+# app version number
+version="0.1"
+# logfile
+logfile="wpfind.log"
+touch wpfind.log
+# script dir
+currentDir=$(pwd)
+# bin date
+date='/bin/date'
+# defaults options
+outputDir=$currentDir/wpfiles
+inputDir=$currentDir
+verbosemode=no
+minw="1920"
+
+# colors const for the script
+UNDERLINE=$(tput sgr 0 1)
+BOLD=$(tput bold)
+ROUGE=$(tput setaf 1)
+VERT=$(tput setaf 2)
+JAUNE=$(tput setaf 3)
+BLEU=$(tput setaf 4)
+MAUVE=$(tput setaf 5)
+CYAN=$(tput setaf 6)
+BLANC=$(tput setaf 7)
+NORMAL=$(tput sgr0)
+INV=$(tput smso)
+BOLDROUGE=${BOLD}${ROUGE}
+BOLDVERT=${BOLD}${VERT}
+BOLDJAUNE=${BOLD}${JAUNE}
+BOLDBLEU=${BOLD}${BLEU}
+BOLDMAUVE=${BOLD}${MAUVE}
+BOLDCYAN=${BOLD}${CYAN}
+BOLDBLANC=${BOLD}${BLANC}
+
+#------------------------------------------------------------------------------
+# show help & informations
+#------------------------------------------------------------------------------
+function usage() {
+	printf "$BOLDJAUNE";
+	printf " _       ______  _______           __\n";
+	printf "| |     / / __ \/ ____(_)___  ____/ /\n";
+	printf "| | /| / / /_/ / /_  / / __ \/ __  / \n";
+	printf "| |/ |/ / ____/ __/ / / / / / /_/ /  \n";
+	printf "|__/|__/_/   /_/   /_/_/ /_/\__,_/   \n";
+	printf "\n"
+  printf "Find wallpapers recursively in the current dir and sub-directories...\n"
+	printf "\n"
+	printf "$NORMAL"
+	printf "Version : $version\n"
+	printf "Author : Francois B (Makoto)\n"
+	printf "Licence : GPLv3\n"
+	printf "\n"
+	printf "Usage : wpfind [options]\n"
+	printf "  -c : copy wallpapers found in a specific folder\n"
+	printf "  -m : move wallpapers found in a specific folder\n"
+	printf "  -i <directory_to_analyze_to_find_wallpapers>  (default: wpfiles inside the current directory)\n"
+	printf "  -o <wallpapers_found_save_directory>  (default: wpfiles inside the current directory)\n"
+	printf "  -w <minimum_pixel_width>  (default: 1920px)\n"
+	printf "  -v : verbose mode\n"
+  printf "  -h : show help & informations\n"
+}
+
+#------------------------------------------------------------------------------
+# compute total elapsed time to process all files
+#------------------------------------------------------------------------------
+function timeElapsed () { #beginProcess endProcess
+	totaltime=$(($endProcess - $beginProcess))
+	heures=$(($totaltime / 3600))
+	tmp=$(($totaltime % 3600 ))
+	minutes=$(($tmp / 60 ))
+	secondes=$(($tmp % 60 ))
+
+	printf "Total time : $heures h $minutes min $secondes sec\n"
+}
+
+#------------------------------------------------------------------------------
+# check if detox is installed
+#------------------------------------------------------------------------------
+function detoxInstalled () {
+	if ! which detox >/dev/null; then
+		printf "$NORMAL""Detox installed : ""$BOLDROUGE""NO""$NORMAL""\n"
+		printf "$NORMAL""Bye...\n""$NORMAL"
+		exit 1
+	fi
+}
+
+#------------------------------------------------------------------------------
+# cleaning filenames using detox
+#------------------------------------------------------------------------------
+function cleanFilenames () {
+	detox ./* &>> $logfile
+}
+
+#------------------------------------------------------------------------------
+# find wp
+#------------------------------------------------------------------------------
+function wpFind () {
+  cleanFilenames
+	# browse recursively files and dir
+	for pic in $1/*; do
+		# if directory
+    if [ -d "$pic" ]; then
+			# if not outputDir
+			if [ "$pic" != "$outputDir" ]; then
+				# browse sub-dir
+    		wpFind "$pic"
+			fi
+		# if file
+    elif [ -f "$pic" ]; then
+      #i=$(($i+1))
+			# if file type is a picture
+			if [[ $(file --mime-type -b "$pic") == image/*g ]]; then
+        pic_w_size=$(identify -format %w $pic)
+        pic_h_size=$(identify -format %h $pic)
+				# if picture width > height
+        if [ "$pic_w_size" -gt "$pic_h_size" ]; then
+					# if picture width <= minimum width
+          if [ "$pic_w_size" -gt "$(($minw-1))" ]; then
+						# if copy mode
+            if [ "$pic2move" = "no" ]; then
+							# if verbose mode
+							if [ "$verbosemode" = "yes" ]; then
+								printf "cp $pic $outputDir\n"
+							fi
+							cp $pic $outputDir
+							date2log=$($date +'%Y-%m-%d %H:%M:%S')
+							printf "$date2log - cp $pic $outputDir\n" >> $logfile
+						# if move mode
+            elif [ "$pic2move" = "yes" ]; then
+							# if verbose mode
+							if [ "$verbosemode" = "yes" ]; then
+								printf "mv $pic $outputDir\n"
+							fi
+							mv $pic $outputDir
+							date2log=$($date +'%Y-%m-%d %H:%M:%S')
+							printf "$date2log - mv $pic $outputDir\n" >> $logfile
+            fi
+            picmoved=$(($picmoved+1))
+          fi
+        fi
+      fi
+    fi
+  done
+}
+
+#------------------------------------------------------------------------------
+# Main
+#------------------------------------------------------------------------------
+function main() {
+	beginProcess=$($date +'%s')
+
+	detoxInstalled
+  printf "$NORMAL""Analyzing...(this may take a (very)(long) while)\n""$NORMAL"
+  #i=0
+  picmoved=0
+	minw=$(($minw-1))
+	wpFind $inputDir
+
+	if [ "$pic2move" = "yes" ]; then
+  	printf "$NORMAL""Pictures moved : ""$BOLDVERT""$picmoved\n""$NORMAL"
+	elif [ "$pic2move" = "no" ]; then
+		printf "$NORMAL""Pictures copied : ""$BOLDVERT""$picmoved\n""$NORMAL"
+	fi
+	if [ "$verbosemode" = "yes" ]; then
+		printf "$NORMAL""Minimal width : $(($minw+1))\n""$NORMAL"
+  	printf "$NORMAL""Logfile : wpfind.log\n""$NORMAL"
+		printf "$NORMAL""Analyzed dir : $inputDir\n""$NORMAL"
+  	printf "$NORMAL""Wallpapers dir : $outputDir\n""$NORMAL"
+	fi
+  printf "\n" >> $logfile
+
+	endProcess=$($date +'%s')
+	timeElapsed beginProcess endProcess
+}
+
+# no parameters
+[[ $# -lt 1 ]] && usage && exit
+
+while getopts ":c,m,h,v,s,i:,o:,w:" option; do
+  case "$option" in
+    c) pic2move=no ;;
+    m) pic2move=yes ;;
+		o) outputDir=$OPTARG; mkdir -p $outputDir ;;
+		i) inputDir=$OPTARG ;;
+		w) minw=$OPTARG ;;
+    h) usage; exit ;;
+    v) verbosemode=yes ;;
+		:) echo "Error : Option $OPTARG : missing argument"; usage; exit 1 ;;
+    \?) echo "Error : $OPTARG : invalid option"; usage; exit 1 ;;
+  esac
+done
+
+main
+
+exit 0
