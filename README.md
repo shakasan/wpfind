@@ -39,28 +39,25 @@ Usage : wpfind [options]
   -h : show help & informations
 ```
 
-Examples of use
----------------
+Usage examples
+--------------
 
 Copy wallpapers in the current directory and sub-directories with minimum width of 1920px to wpfiles
 
 ```
 wpfind -c
-
 ```
 
 Move wallpapers in the current directory and sub-directories with minimum width of 1920px to wpfiles
 
 ```
 wpfind -m
-
 ```
 
 Move wallpapers in the /home/user/MyPics directory and sub-directories with minimum width of 2560px to /home/user/MyWP directory
 
 ```
 wpfind -m -w 2560 -i /home/user/MyPics -o /home/user/MyWP
-
 ```
 
 Credits
