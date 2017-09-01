@@ -6,6 +6,15 @@ WPFind
 The purpose of this script is to find wallpapers among pictures files in directory and sub-directories and move/copy them to a separate directory.
 It can be useful when you are trying to clean your mess on your computer ;-)
 
+Requirements
+------------
+
+* Ubuntu, Linux Mint (should work on other Ubuntu derivatives)
+* detox
+```
+sudo apt-get install detox
+```
+
 Installation
 ------------
 
