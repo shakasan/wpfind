@@ -14,6 +14,10 @@ Requirements
 ```
 sudo apt-get install detox
 ```
+* imagemagick
+```
+sudo apt-get install imagemagick
+```
 
 Installation
 ------------
