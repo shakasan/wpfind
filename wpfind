@@ -85,9 +85,14 @@ function timeElapsed () { #beginProcess endProcess
 #------------------------------------------------------------------------------
 # check if detox is installed
 #------------------------------------------------------------------------------
-function detoxInstalled () {
+function depInstalled () {
 	if ! which detox >/dev/null; then
 		printf "$NORMAL""Detox installed : ""$BOLDROUGE""NO""$NORMAL""\n"
+		printf "$NORMAL""Bye...\n""$NORMAL"
+		exit 1
+	fi
+	if ! which identify >/dev/null; then
+		printf "$NORMAL""Imagemagick installed : ""$BOLDROUGE""NO""$NORMAL""\n"
 		printf "$NORMAL""Bye...\n""$NORMAL"
 		exit 1
 	fi
@@ -158,7 +163,7 @@ function wpFind () {
 function main() {
 	beginProcess=$($date +'%s')
 
-	detoxInstalled
+	depInstalled
   printf "$NORMAL""Analyzing...(this may take a (very)(long) while)\n""$NORMAL"
   #i=0
   picmoved=0
