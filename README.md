@@ -25,6 +25,11 @@ Installation
 ```
 sudo dpkg -i wpfind.deb
 ```
+If requirements are not installed, the previous command will fail because the dependencies are not satisfied.
+Fix it by (which should install detox and/or imagemagick if they are missing)
+```
+sudo apt-get install -f
+```
 
 Usage options
 -------------
