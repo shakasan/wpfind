@@ -3,7 +3,8 @@
 WPFind
 ======
 
-The purpose of this script is to find wallpapers among pictures files and move them to a separate directory wp. It can be useful when you are trying to clean your mess on your computer ;-)
+The purpose of this script is to find wallpapers among pictures files in directory and sub-directories and move/copy them to a separate directory.
+It can be useful when you are trying to clean your mess on your computer ;-)
 
 Installation
 ------------
@@ -12,13 +13,54 @@ Installation
 sudo dpkg -i wpfind.deb
 ```
 
-Usage
------
-
-Go to the directory you want to clean and use this command
+Usage options
+-------------
 
 ```
-wpfind
+ _       ______  _______           __
+| |     / / __ \/ ____(_)___  ____/ /
+| | /| / / /_/ / /_  / / __ \/ __  /
+| |/ |/ / ____/ __/ / / / / / /_/ /  
+|__/|__/_/   /_/   /_/_/ /_/\__,_/   
+
+Find wallpapers recursively in the current dir and sub-directories...
+
+Version : 0.1
+Author : Francois B (Makoto)
+Licence : GPLv3
+
+Usage : wpfind [options]
+  -c : copy wallpapers found in a specific folder
+  -m : move wallpapers found in a specific folder
+  -i <directory_to_analyze_to_find_wallpapers>  (default: wpfiles inside the current directory)
+  -o <wallpapers_found_save_directory>  (default: wpfiles inside the current directory)
+  -w <minimum_pixel_width>  (default: 1920px)
+  -v : verbose mode
+  -h : show help & informations
+```
+
+Examples of use
+---------------
+
+Copy wallpapers in the current directory and sub-directories with minimum width of 1920px to wpfiles
+
+```
+wpfind -c
+
+```
+
+Move wallpapers in the current directory and sub-directories with minimum width of 1920px to wpfiles
+
+```
+wpfind -m
+
+```
+
+Move wallpapers in the /home/user/MyPics directory and sub-directories with minimum width of 2560px to /home/user/MyWP directory
+
+```
+wpfind -m -w 2560 -i /home/user/MyPics -o /home/user/MyWP
+
 ```
 
 Credits
@@ -36,4 +78,4 @@ The script is licensed under the terms of the GPLv3
 
 Changelog
 ---------
-2017-08-20 : initial release 0.1
+2017-09-02 : initial release 0.1
