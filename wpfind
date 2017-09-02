@@ -21,7 +21,7 @@ inputDir=$currentDir
 verbosemode=no
 minw="1920"
 
-# colors const for the script
+# colors const used in the script
 UNDERLINE=$(tput sgr 0 1)
 BOLD=$(tput bold)
 ROUGE=$(tput setaf 1)
