@@ -51,7 +51,7 @@ Licence : GPLv3
 Usage : wpfind [options]
   -c : copy wallpapers found in a specific folder
   -m : move wallpapers found in a specific folder
-  -i <directory_to_analyze_to_find_wallpapers>  (default: wpfiles inside the current directory)
+  -i <directory_to_analyze_to_find_wallpapers>  (default: current directory)
   -o <wallpapers_found_save_directory>  (default: wpfiles inside the current directory)
   -w <minimum_pixel_width>  (default: 1920px)
   -v : verbose mode
