@@ -84,7 +84,7 @@ function timeElapsed () { #beginProcess endProcess
 }
 
 #------------------------------------------------------------------------------
-# check if detox is installed
+# check if detox and Imagemagick are installed
 #------------------------------------------------------------------------------
 function depInstalled () {
 	if ! which detox >/dev/null; then
