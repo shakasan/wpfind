@@ -100,17 +100,11 @@ function depInstalled () {
 }
 
 #------------------------------------------------------------------------------
-# cleaning filenames using detox
-#------------------------------------------------------------------------------
-function cleanFilenames () {
-	detox ./* &>> $logfile
-}
-
-#------------------------------------------------------------------------------
 # find wp
 #------------------------------------------------------------------------------
 function wpFind () {
-  cleanFilenames
+	# cleaning filenames using detox
+	detox -r $1/* &>> $logfile
 	# browse recursively files and dir
 	for pic in $1/*; do
 		# if directory
