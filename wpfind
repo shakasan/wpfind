@@ -122,7 +122,6 @@ function wpFind () {
 			fi
 		# if file
     elif [ -f "$pic" ]; then
-      #i=$(($i+1))
 			# if file type is a picture
 			if [[ $(file --mime-type -b "$pic") == image/*g ]]; then
         pic_w_size=$(identify -format %w $pic)
