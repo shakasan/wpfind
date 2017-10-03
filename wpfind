@@ -100,17 +100,38 @@ function depInstalled () {
 }
 
 #------------------------------------------------------------------------------
+# check if valid directory
+#------------------------------------------------------------------------------
+function isValidDirectory() { #directory #I/O
+	# check if the given outputDir is a valid directory
+	if [[ ! -d $1 ]]; then
+		printf "$NORMAL""-$2 setting is not a valid directory\n"
+		printf "$NORMAL""Bye...\n""$NORMAL"
+		exit 1
+	fi
+}
+
+
+#------------------------------------------------------------------------------
 # find wp
 #------------------------------------------------------------------------------
 function wpFind () {
 	# cleaning filenames using detox
 	detox -r $1/* &>> $logfile
+
+	# check and remove if necessary an ending / to the outinputDir path
+	length=${#outputDir}
+	last_char=${outputDir:length-1:1}
+	if [[ $last_char == "/" ]]; then
+		outputDirToCheck=${outputDir:0:length-1}
+	fi
+
 	# browse recursively files and dir
 	for pic in $1/*; do
 		# if directory
     if [ -d "$pic" ]; then
 			# if not outputDir
-			if [ "$pic" != "$outputDir" ]; then
+			if [ "$pic" != "$outputDirToCheck" ]; then
 				# browse sub-dir
     		wpFind "$pic"
 			fi
@@ -156,19 +177,47 @@ function wpFind () {
 #------------------------------------------------------------------------------
 function main() {
 	beginProcess=$($date +'%s')
-
-	depInstalled
   printf "$NORMAL""Analyzing...(this may take a (very)(long) while)\n""$NORMAL"
-  #i=0
+
+	# check if detox is installed
+	depInstalled
+
+	# create the outputDir if doesn't exist
+	mkdir -p $outputDir
+
+	# check and add if necessary an ending / to the outputDir path
+	length=${#outputDir}
+	last_char=${outputDir:length-1:1}
+	if [[ $last_char != "/" ]]; then
+		outputDir="$outputDir/"
+	fi
+
+	# check and remove if necessary an ending / to the inputDir path
+	length=${#inputDir}
+	last_char=${inputDir:length-1:1}
+	if [[ $last_char == "/" ]]; then
+		inputDir=${inputDir:0:length-1}
+	fi
+
+	# check if the given outputDir is a valid directory
+	isValidDirectory $outputDir "o"
+	# check if the given inputDir is a valid directory
+	isValidDirectory $inputDir "i"
+
+	# some var init
   picmoved=0
 	minw=$(($minw-1))
+
+	# begin the process
 	wpFind $inputDir
 
+	# display final status
 	if [ "$pic2move" = "yes" ]; then
   	printf "$NORMAL""Pictures moved : ""$BOLDVERT""$picmoved\n""$NORMAL"
 	elif [ "$pic2move" = "no" ]; then
 		printf "$NORMAL""Pictures copied : ""$BOLDVERT""$picmoved\n""$NORMAL"
 	fi
+	# display additional informations with the status
 	if [ "$verbosemode" = "yes" ]; then
 		printf "$NORMAL""Minimal width : $(($minw+1))\n""$NORMAL"
   	printf "$NORMAL""Logfile : wpfind.log\n""$NORMAL"
@@ -177,6 +226,7 @@ function main() {
 	fi
   printf "\n" >> $logfile
 
+	# display the time elapsed for the complete process
 	endProcess=$($date +'%s')
 	timeElapsed beginProcess endProcess
 }
@@ -188,7 +238,7 @@ while getopts ":c,m,h,v,s,i:,o:,w:" option; do
   case "$option" in
     c) pic2move=no ;;
     m) pic2move=yes ;;
-		o) outputDir=$OPTARG; mkdir -p $outputDir ;;
+		o) outputDir=$OPTARG ;;
 		i) inputDir=$OPTARG ;;
 		w) minw=$OPTARG ;;
     h) usage; exit ;;
