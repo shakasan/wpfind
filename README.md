@@ -45,7 +45,7 @@ Usage options
 
 Find wallpapers recursively in a dir and sub-directories...
 
-Version : 0.1.1
+Version : 0.1.2
 Author : Francois B (Makoto)
 Licence : GPLv3
 

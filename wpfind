@@ -7,7 +7,7 @@
 #------------------------------------------------------------------------------
 
 # app version number
-version="0.1.1"
+version="0.1.2"
 # logfile
 logfile="wpfind.log"
 touch wpfind.log
