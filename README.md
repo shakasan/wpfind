@@ -1,4 +1,4 @@
-![myInstallScript](https://sirenacorp.be/wp-content/uploads/2016/01/logo-1.png)
+![wpfind](pics/logo.png)
 
 WPFind
 ======
