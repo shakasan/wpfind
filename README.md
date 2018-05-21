@@ -11,25 +11,16 @@ Requirements
 
 * Ubuntu, Linux Mint (should work on other Ubuntu derivatives)
 * detox
-```
-sudo apt-get install detox
-```
 * imagemagick
-```
-sudo apt-get install imagemagick
-```
 
 Installation
 ------------
 
 ```
-sudo dpkg -i wpfind.deb
-```
-If requirements are not installed, the previous command will fail because the dependencies are not satisfied.
-
-Fix it by (should install detox and/or imagemagick if they are missing)
-```
-sudo apt-get install -f
+curl -L https://packagecloud.io/makoto/stable/gpgkey | sudo apt-key add -
+echo "deb https://packagecloud.io/makoto/stable/ubuntu/ xenial main" | sudo tee /etc/apt/sources.list.d/makoto.list
+sudo apt-get update
+sudo apt-get install wpfind
 ```
 
 Usage options
@@ -85,14 +76,10 @@ Credits
 
 This script has been written by Francois B. (Makotosan/Shakasan)
 
-* Email : shakasan@sirenacorp.be
-* Website : https://sirenacorp.be/
+* Email : francois@makotonoblog.be
+* Website : https://makotonoblog.be/wpfind/
 
 Licence
 -------
 
 The script is licensed under the terms of the GPLv3
-
-Changelog
----------
-2017-09-02 : initial release 0.1
