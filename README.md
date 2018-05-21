@@ -16,6 +16,8 @@ Requirements
 Installation
 ------------
 
+For Ubuntu 16.04, Linux Mint 18.x, and other derivatives
+
 ```
 curl -L https://packagecloud.io/makoto/stable/gpgkey | sudo apt-key add -
 echo "deb https://packagecloud.io/makoto/stable/ubuntu/ xenial main" | sudo tee /etc/apt/sources.list.d/makoto.list
