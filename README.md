@@ -25,6 +25,15 @@ sudo apt-get update
 sudo apt-get install wpfind
 ```
 
+For Ubuntu 18.04, Linux Mint 19.x, and other derivatives
+
+```
+curl -L https://packagecloud.io/makoto/stable/gpgkey | sudo apt-key add -
+echo "deb https://packagecloud.io/makoto/stable/ubuntu/ bionic main" | sudo tee /etc/apt/sources.list.d/makoto.list
+sudo apt-get update
+sudo apt-get install wpfind
+```
+
 Usage options
 -------------
 
