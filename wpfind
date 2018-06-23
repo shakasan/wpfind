@@ -7,10 +7,10 @@
 #------------------------------------------------------------------------------
 
 # app version number
-version="0.1.2"
+version="0.1.3"
 # logfile
 logfile="wpfind.log"
-touch wpfind.log
+touch $logfile
 # script dir
 currentDir=$(pwd)
 # bin date
@@ -20,6 +20,7 @@ outputDir=$currentDir/wpfiles
 inputDir=$currentDir
 verbosemode=no
 minw="1920"
+iMode=""
 
 # colors const used in the script
 UNDERLINE=$(tput sgr 0 1)
@@ -42,9 +43,9 @@ BOLDCYAN=${BOLD}${CYAN}
 BOLDBLANC=${BOLD}${BLANC}
 
 #------------------------------------------------------------------------------
-# show help & informations
+# show app logo
 #------------------------------------------------------------------------------
-function usage() {
+function logo() {
 	printf "\n"
 	printf "$BOLDJAUNE";
 	printf "██╗    ██╗██████╗ ███████╗██╗███╗   ██╗██████╗ \n";
@@ -62,6 +63,13 @@ function usage() {
 	printf "Author : Francois B (Makoto)\n"
 	printf "Licence : GPLv3\n"
 	printf "\n"
+}
+
+#------------------------------------------------------------------------------
+# show help & informations
+#------------------------------------------------------------------------------
+function usage() {
+	printf "$NORMAL"
 	printf "Usage : wpfind [options]\n"
 	printf "  -c : copy wallpapers found in the specified directory\n"
 	printf "  -m : move wallpapers found in the specified directory\n"
@@ -91,12 +99,10 @@ function timeElapsed () { #beginProcess endProcess
 function depInstalled () {
 	if ! which detox >/dev/null; then
 		printf "$NORMAL""Detox installed : ""$BOLDROUGE""NO""$NORMAL""\n"
-		printf "$NORMAL""Bye...\n""$NORMAL"
 		exit 1
 	fi
 	if ! which identify >/dev/null; then
 		printf "$NORMAL""Imagemagick installed : ""$BOLDROUGE""NO""$NORMAL""\n"
-		printf "$NORMAL""Bye...\n""$NORMAL"
 		exit 1
 	fi
 }
@@ -107,12 +113,10 @@ function depInstalled () {
 function isValidDirectory() { #directory #I/O
 	# check if the given outputDir is a valid directory
 	if [[ ! -d $1 ]]; then
-		printf "$NORMAL""-$2 setting is not a valid directory\n"
-		printf "$NORMAL""Bye...\n""$NORMAL"
+		printf "$BOLDROUGE""Error" "$NORMAL"" : -$2 setting is not a valid directory\n"
 		exit 1
 	fi
 }
-
 
 #------------------------------------------------------------------------------
 # find wp
@@ -121,18 +125,11 @@ function wpFind () {
 	# cleaning filenames using detox
 	detox -r $1/* &>> $logfile
 
-	# check and remove if necessary an ending / to the outinputDir path
-	length=${#outputDir}
-	last_char=${outputDir:length-1:1}
-	if [[ $last_char == "/" ]]; then
-		outputDirToCheck=${outputDir:0:length-1}
-	fi
-
 	# browse recursively files and dir
 	for pic in $1/*; do
 		# if directory
     if [ -d "$pic" ]; then
-			# if not outputDir
+			# and if not outputDir
 			if [ "$pic" != "$outputDirToCheck" ]; then
 				# browse sub-dir
     		wpFind "$pic"
@@ -151,20 +148,20 @@ function wpFind () {
             if [ "$pic2move" = "no" ]; then
 							# if verbose mode
 							if [ "$verbosemode" = "yes" ]; then
-								printf "cp $pic $outputDir\n"
+								printf "cp $iMode $pic $outputDir\n"
 							fi
-							cp $pic $outputDir
+							cp $iMode $pic $outputDir
 							date2log=$($date +'%Y-%m-%d %H:%M:%S')
-							printf "$date2log - cp $pic $outputDir\n" >> $logfile
+							printf "$date2log - cp $iMode $pic $outputDir\n" >> $logfile
 						# if move mode
             elif [ "$pic2move" = "yes" ]; then
 							# if verbose mode
 							if [ "$verbosemode" = "yes" ]; then
-								printf "mv $pic $outputDir\n"
+								printf "mv $iMode $pic $outputDir\n"
 							fi
-							mv $pic $outputDir
+							mv $iMode $pic $outputDir
 							date2log=$($date +'%Y-%m-%d %H:%M:%S')
-							printf "$date2log - mv $pic $outputDir\n" >> $logfile
+							printf "$date2log - mv $iMode $pic $outputDir\n" >> $logfile
             fi
             picmoved=$(($picmoved+1))
           fi
@@ -233,22 +230,57 @@ function main() {
 	timeElapsed beginProcess endProcess
 }
 
+#------------------------------------------------------------------------------
+
 # no parameters
-[[ $# -lt 1 ]] && usage && exit
+[[ $# -lt 1 ]] && logo && usage && exit
 
 while getopts ":c,m,h,v,s,i:,o:,w:" option; do
   case "$option" in
-    c) pic2move=no ;;
-    m) pic2move=yes ;;
-		o) outputDir=$OPTARG ;;
-		i) inputDir=$OPTARG ;;
-		w) minw=$OPTARG ;;
-    h) usage; exit ;;
-    v) verbosemode=yes ;;
-		:) echo "Error : Option $OPTARG : missing argument"; usage; exit 1 ;;
-    \?) echo "Error : $OPTARG : invalid option"; usage; exit 1 ;;
+    c)
+			pic2move=no
+			;;
+    m)
+			pic2move=yes
+			;;
+		o)
+			outputDir=$OPTARG
+			;;
+		i)
+			inputDir=$OPTARG
+			;;
+		w)
+			minw=$OPTARG
+			;;
+    h)
+			logo
+			usage
+			exit 0
+			;;
+		s)
+			iMode="-i"
+			;;
+    v)
+			verbosemode=yes
+			;;
+		:)
+			printf "$BOLDROUGE""Error""$NORMAL : Option $OPTARG : missing argument\n\n"
+			usage
+			exit 1
+			;;
+    \?)
+			printf "$BOLDROUGE""Error""$NORMAL"" : $OPTARG : invalid option\n\n"
+			usage
+			exit 1
+			;;
   esac
 done
+
+# if no mode choosed but other options set
+if [ -z ${pic2move} ]; then
+	printf "$BOLDROUGE""Error""$NORMAL"" : please use copy mode (-c) or move mode (-m)\n\n"
+	exit 1
+fi
 
 main
 
