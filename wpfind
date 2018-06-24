@@ -73,6 +73,7 @@ function usage() {
 	printf "Usage : wpfind [options]\n"
 	printf "  -c : copy wallpapers found in the specified directory\n"
 	printf "  -m : move wallpapers found in the specified directory\n"
+	printf "  -s : interactive mode (ask confirmation before overwriting a file)\n"
 	printf "  -i <directory_to_analyze_to_find_wallpapers>  (default: current directory)\n"
 	printf "  -o <wallpapers_found_save_directory>  (default: wpfiles inside the current directory)\n"
 	printf "  -w <minimum_pixel_width>  (default: 1920px)\n"
