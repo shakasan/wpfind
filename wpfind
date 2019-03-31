@@ -7,7 +7,7 @@
 #------------------------------------------------------------------------------
 
 # app version number
-version="0.1.3"
+version="0.1.3.1"
 # logfile
 logfile="wpfind.log"
 touch $logfile
@@ -56,7 +56,7 @@ function logo() {
 	printf " ╚══╝╚══╝ ╚═╝     ╚═╝     ╚═╝╚═╝  ╚═══╝╚═════╝ \n";
 	printf "$BOLDVERT";
 	printf "\n"
-  printf "Find wallpapers recursively in a dir and sub-directories...\n"
+	printf "Find wallpapers recursively in a dir and sub-directories...\n"
 	printf "\n"
 	printf "$NORMAL"
 	printf "Version : $version\n"
@@ -78,7 +78,7 @@ function usage() {
 	printf "  -o <wallpapers_found_save_directory>  (default: wpfiles inside the current directory)\n"
 	printf "  -w <minimum_pixel_width>  (default: 1920px)\n"
 	printf "  -v : verbose mode\n"
-  printf "  -h : show help & informations\n"
+	printf "  -h : show help & informations\n"
 }
 
 #------------------------------------------------------------------------------
@@ -129,24 +129,24 @@ function wpFind () {
 	# browse recursively files and dir
 	for pic in $1/*; do
 		# if directory
-    if [ -d "$pic" ]; then
+		if [ -d "$pic" ]; then
 			# and if not outputDir
 			if [ "$pic" != "$outputDirToCheck" ]; then
 				# browse sub-dir
-    		wpFind "$pic"
+				wpFind "$pic"
 			fi
 		# if file
-    elif [ -f "$pic" ]; then
+		elif [ -f "$pic" ]; then
 			# if file type is a picture
 			if [[ $(file --mime-type -b "$pic") == image/*g ]]; then
-        pic_w_size=$(identify -format %w $pic)
-        pic_h_size=$(identify -format %h $pic)
+				pic_w_size=$(identify -format %w $pic)
+				pic_h_size=$(identify -format %h $pic)
 				# if picture width > height
-        if [ "$pic_w_size" -gt "$pic_h_size" ]; then
+				if [ "$pic_w_size" -gt "$pic_h_size" ]; then
 					# if picture width <= minimum width
-          if [ "$pic_w_size" -gt "$(($minw-1))" ]; then
+					if [ "$pic_w_size" -gt "$(($minw-1))" ]; then
 						# if copy mode
-            if [ "$pic2move" = "no" ]; then
+						if [ "$pic2move" = "no" ]; then
 							# if verbose mode
 							if [ "$verbosemode" = "yes" ]; then
 								printf "cp $iMode $pic $outputDir\n"
@@ -155,7 +155,7 @@ function wpFind () {
 							date2log=$($date +'%Y-%m-%d %H:%M:%S')
 							printf "$date2log - cp $iMode $pic $outputDir\n" >> $logfile
 						# if move mode
-            elif [ "$pic2move" = "yes" ]; then
+						elif [ "$pic2move" = "yes" ]; then
 							# if verbose mode
 							if [ "$verbosemode" = "yes" ]; then
 								printf "mv $iMode $pic $outputDir\n"
@@ -163,13 +163,13 @@ function wpFind () {
 							mv $iMode $pic $outputDir
 							date2log=$($date +'%Y-%m-%d %H:%M:%S')
 							printf "$date2log - mv $iMode $pic $outputDir\n" >> $logfile
-            fi
-            picmoved=$(($picmoved+1))
-          fi
-        fi
-      fi
-    fi
-  done
+						fi
+						picmoved=$(($picmoved+1))
+					fi
+				fi
+			fi
+		fi
+	done
 }
 
 #------------------------------------------------------------------------------
@@ -177,9 +177,9 @@ function wpFind () {
 #------------------------------------------------------------------------------
 function main() {
 	beginProcess=$($date +'%s')
-  printf "$NORMAL""Analyzing...(this may take a (very)(long) while)\n""$NORMAL"
+	printf "$NORMAL""Analyzing...(this may take a (very)(long) while)\n""$NORMAL"
 
-	# check if detox is installed
+	# check if dependencies are installed
 	depInstalled
 
 	# create the outputDir if doesn't exist
@@ -205,7 +205,7 @@ function main() {
 	isValidDirectory $inputDir "i"
 
 	# some var init
-  picmoved=0
+	picmoved=0
 	minw=$(($minw-1))
 
 	# begin the process
@@ -213,18 +213,18 @@ function main() {
 
 	# display final status
 	if [ "$pic2move" = "yes" ]; then
-  	printf "$NORMAL""Pictures moved : ""$BOLDVERT""$picmoved\n""$NORMAL"
+		printf "$NORMAL""Pictures moved : ""$BOLDVERT""$picmoved\n""$NORMAL"
 	elif [ "$pic2move" = "no" ]; then
 		printf "$NORMAL""Pictures copied : ""$BOLDVERT""$picmoved\n""$NORMAL"
 	fi
 	# display additional informations with the status
 	if [ "$verbosemode" = "yes" ]; then
 		printf "$NORMAL""Minimal width : $(($minw+1))\n""$NORMAL"
-  	printf "$NORMAL""Logfile : wpfind.log\n""$NORMAL"
+		printf "$NORMAL""Logfile : wpfind.log\n""$NORMAL"
 		printf "$NORMAL""Analyzed dir : $inputDir\n""$NORMAL"
-  	printf "$NORMAL""Wallpapers dir : $outputDir\n""$NORMAL"
+		printf "$NORMAL""Wallpapers dir : $outputDir\n""$NORMAL"
 	fi
-  printf "\n" >> $logfile
+	printf "\n" >> $logfile
 
 	# display the time elapsed for the complete process
 	endProcess=$($date +'%s')
@@ -237,11 +237,11 @@ function main() {
 [[ $# -lt 1 ]] && logo && usage && exit
 
 while getopts ":c,m,h,v,s,i:,o:,w:" option; do
-  case "$option" in
-    c)
+	case "$option" in
+    	c)
 			pic2move=no
 			;;
-    m)
+    	m)
 			pic2move=yes
 			;;
 		o)
@@ -253,7 +253,7 @@ while getopts ":c,m,h,v,s,i:,o:,w:" option; do
 		w)
 			minw=$OPTARG
 			;;
-    h)
+    	h)
 			logo
 			usage
 			exit 0
@@ -261,7 +261,7 @@ while getopts ":c,m,h,v,s,i:,o:,w:" option; do
 		s)
 			iMode="-i"
 			;;
-    v)
+    	v)
 			verbosemode=yes
 			;;
 		:)
@@ -269,12 +269,12 @@ while getopts ":c,m,h,v,s,i:,o:,w:" option; do
 			usage
 			exit 1
 			;;
-    \?)
+    	\?)
 			printf "$BOLDROUGE""Error""$NORMAL"" : $OPTARG : invalid option\n\n"
 			usage
 			exit 1
 			;;
-  esac
+	esac
 done
 
 # if no mode choosed but other options set
