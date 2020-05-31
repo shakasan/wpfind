@@ -34,6 +34,21 @@ sudo apt-get update
 sudo apt-get install wpfind
 ```
 
+For Ubuntu 20.04, Linux Mint 20.x, and other derivatives
+
+```
+curl -L https://packagecloud.io/makoto/stable/gpgkey | sudo apt-key add -
+echo "deb https://packagecloud.io/makoto/stable/ubuntu/ focal main" | sudo tee /etc/apt/sources.list.d/makoto.list
+sudo apt-get update
+sudo apt-get install wpfind
+```
+
+For Arch Linux and other derivatives
+
+```
+trizen -S wpfind
+```
+
 Usage options
 -------------
 
@@ -47,7 +62,7 @@ Usage options
 
 Find wallpapers recursively in a dir and sub-directories...
 
-Version : 0.1.2
+Version : 0.1.3
 Author : Francois B (Makoto)
 Licence : GPLv3
 
