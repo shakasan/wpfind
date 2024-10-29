@@ -34,7 +34,7 @@ sudo apt-get install wpfind
 For Arch Linux and derivatives
 
 ```shell
-trizen -S wpfind
+yay -S wpfind
 ```
 
 ## Usage options
