@@ -7,7 +7,7 @@ It can be useful when you are trying to clean your mess on your computer ;-)
 
 ## Requirements
 
-- Ubuntu, Linux Mint (should work on other Ubuntu derivatives)
+- Ubuntu, Linux Mint (should work on Ubuntu derivatives), Arch Linux (should work on Ubuntu derivatives)
 - detox
 - imagemagick
 
